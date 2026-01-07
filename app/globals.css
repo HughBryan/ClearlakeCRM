@@ -56,6 +56,11 @@
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
   --tracking-normal: 0.025em;
   --spacing: 0.25rem;
+  --success: oklch(0.6959 0.1491 162.4796);
+  --success-foreground: oklch(0.2046 0 0);
+  --status-urgent: oklch(0.6984 0.1763 17.3611);
+  --status-warning: oklch(0.8471 0.1549 84.5603);
+  --status-normal: oklch(0.7019 0.1649 250.9083);
 }
 
 .dark {
@@ -109,6 +114,11 @@
   --shadow-lg: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 4px 6px -1px hsl(0 0% 0% / 0.17);
   --shadow-xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.17), 0px 8px 10px -1px hsl(0 0% 0% / 0.17);
   --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.43);
+  --success: oklch(0.7845 0.1325 181.9120);
+  --success-foreground: oklch(0.9851 0 0);
+  --status-urgent: oklch(0.6984 0.1763 17.3611);
+  --status-warning: oklch(0.8471 0.1549 84.5603);
+  --status-normal: oklch(0.7019 0.1649 250.9083);
 }
 
 @theme inline {
@@ -128,6 +138,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-status-urgent: var(--status-urgent);
+  --color-status-warning: var(--status-warning);
+  --color-status-normal: var(--status-normal);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -171,8 +186,23 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-    letter-spacing: var(--tracking-normal);
-  }
+}
+
+body {
+  letter-spacing: var(--tracking-normal);
+}
+
+/* Subtle rounded corners for table rows */
+[data-slot="table-row"] {
+  border-radius: var(--radius-sm);
+}
+
+[data-slot="table-row"] td:first-child {
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+[data-slot="table-row"] td:last-child {
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
 }
