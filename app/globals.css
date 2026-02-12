@@ -58,6 +58,7 @@
   --spacing: 0.25rem;
   --success: oklch(0.6959 0.1491 162.4796);
   --success-foreground: oklch(0.2046 0 0);
+  --status-expired: oklch(38.288% 0.00004 271.152);
   --status-urgent: oklch(0.6984 0.1763 17.3611);
   --status-warning: oklch(0.8471 0.1549 84.5603);
   --status-normal: oklch(0.7019 0.1649 250.9083);

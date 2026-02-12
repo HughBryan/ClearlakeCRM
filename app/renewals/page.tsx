@@ -1,34 +1,79 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Navigation } from "@/components/navigation"
 import { RenewalsSplitView } from "@/components/renewals-split-view"
 import { ZoneRenewalWithQuotes } from "@/lib/types/database"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function RenewalsPage() {
   const [renewals, setRenewals] = useState<ZoneRenewalWithQuotes[]>([])
-  const [loading, setLoading] = useState(true)
+  const [accountManagers, setAccountManagers] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+  const [loadingManagers, setLoadingManagers] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [accountManager, setAccountManager] = useState('')
 
-  // Fetch renewals
+  // Fetch account managers on mount
   useEffect(() => {
-    fetchRenewals()
+    fetchAccountManagers()
   }, [])
 
-  const fetchRenewals = async () => {
+  // Auto-fetch renewals when account manager changes
+  useEffect(() => {
+    if (accountManager) {
+      fetchRenewals()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountManager])
+
+  const fetchAccountManagers = async () => {
     try {
-      setLoading(true)
-      const response = await fetch('/api/renewals')
+      setLoadingManagers(true)
+      const response = await fetch('/api/renewals/account-managers')
       const result = await response.json()
 
       if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch account managers')
+      }
+
+      setAccountManagers(result.data || [])
+    } catch (err) {
+      console.error('Error fetching account managers:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load account managers')
+    } finally {
+      setLoadingManagers(false)
+    }
+  }
+
+  const fetchRenewals = async () => {
+    if (!accountManager.trim()) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      setError(null)
+      const params = new URLSearchParams({ accountManager: accountManager.trim() })
+      const response = await fetch(`/api/renewals?${params.toString()}`)
+
+      if (!response.ok) {
+        const result = await response.json()
         throw new Error(result.error || 'Failed to fetch renewals')
       }
 
+      const result = await response.json()
       setRenewals(result.data || [])
-      setError(null)
     } catch (err) {
+      console.error('Error fetching renewals:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
+      setRenewals([])
     } finally {
       setLoading(false)
     }
@@ -105,7 +150,25 @@ export default function RenewalsPage() {
       <Navigation />
 
       <main className="ml-64 pt-16 px-4 py-4">
-        <div className="mb-5">
+        <div className="mb-5 flex gap-3 items-center max-w-md">
+          <div className="flex-1">
+            <Select
+              value={accountManager}
+              onValueChange={setAccountManager}
+              disabled={loadingManagers}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={loadingManagers ? "Loading account managers..." : "Select account manager"} />
+              </SelectTrigger>
+              <SelectContent>
+                {accountManagers.map((manager) => (
+                  <SelectItem key={manager} value={manager}>
+                    {manager}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {loading ? (
@@ -133,6 +196,20 @@ export default function RenewalsPage() {
             >
               Retry
             </button>
+          </div>
+        ) : renewals.length === 0 && !error && !accountManager ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <div className="text-muted-foreground text-center space-y-2">
+              <p className="text-lg">Select an account manager to view renewals</p>
+              <p className="text-sm">Use the dropdown above to filter renewals by account manager</p>
+            </div>
+          </div>
+        ) : renewals.length === 0 && !error && accountManager ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <div className="text-muted-foreground text-center space-y-2">
+              <p className="text-lg">No renewals found</p>
+              <p className="text-sm">No renewals found for {accountManager}</p>
+            </div>
           </div>
         ) : (
           <RenewalsSplitView
