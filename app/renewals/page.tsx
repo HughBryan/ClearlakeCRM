@@ -149,7 +149,7 @@ export default function RenewalsPage() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Navigation />
 
-      <main className="ml-64 pt-16 px-4 py-4">
+      <main className="ml-64 pt-20 px-4 py-4">
         <div className="mb-5 flex gap-3 items-center max-w-md">
           <div className="flex-1">
             <Select
