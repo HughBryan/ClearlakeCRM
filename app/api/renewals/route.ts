@@ -25,8 +25,7 @@ export async function GET(request: Request) {
 
     // Map the basic renewal data to match the expected interface
     const mappedRenewals: ZoneRenewalWithQuotes[] = renewals.map((renewal, index) => ({
-      // Use client_code as policy_id for now (adjust based on your actual data)
-      policy_id: renewal.client_code || `renewal-${index}`,
+      policy_id: renewal.policy_id,
       client_code: renewal.client_code,
       lob: renewal.lob,
       expiry_date: renewal.expiry_date,
