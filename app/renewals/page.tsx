@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Navigation } from "@/components/navigation"
-import { RenewalsSplitView } from "@/components/renewals-split-view"
+import { RenewalsTableView } from "@/components/renewals-table-view"
 import { ZoneRenewalWithQuotes } from "@/lib/types/database"
 import {
   Select,
@@ -146,11 +146,11 @@ export default function RenewalsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-background via-background to-muted/20">
       <Navigation />
 
-      <main className="ml-64 pt-20 px-4 py-4">
-        <div className="mb-5 flex gap-3 items-center max-w-md">
+      <main className="ml-64 pt-20 px-4 py-4 h-full overflow-hidden">
+        <div className="mb-4 flex gap-3 items-center max-w-md">
           <div className="flex-1">
             <Select
               value={accountManager}
@@ -212,7 +212,7 @@ export default function RenewalsPage() {
             </div>
           </div>
         ) : (
-          <RenewalsSplitView
+          <RenewalsTableView
             data={renewals}
             onToggleMarked={handleToggleMarked}
             onUpdateComments={handleUpdateComments}
